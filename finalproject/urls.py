@@ -16,7 +16,9 @@ Including another URLconf
 from django.urls import include, path
 from rest_framework import routers
 from pictures import views
+from rest_framework_jwt.views import obtain_jwt_token
 
 urlpatterns = [
-    path('', include('pictures.urls')),
+    path('pictures/', include('pictures.urls')),
+    path('token-auth/', obtain_jwt_token)
 ]
