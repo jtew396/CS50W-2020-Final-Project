@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.shortcuts import render
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import api_view, action, authentication_classes, permission_classes
 from rest_framework.response import Response
