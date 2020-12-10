@@ -80,6 +80,8 @@ import React, { Component } from 'react';
 import Nav from './components/Nav';
 import LoginForm from './components/LoginForm';
 import SignupForm from './components/SignupForm';
+import PicturesNavbar from './components/PicturesNavbar';
+import PicturesBody from './components/PicturesBody';
 import './App.css';
 
 class App extends Component {
@@ -172,10 +174,15 @@ class App extends Component {
 
     return (
       <div className="App">
-        <Nav
+        <PicturesNavbar
           logged_in={this.state.logged_in}
+          username={this.state.username}
           display_form={this.display_form}
           handle_logout={this.handle_logout}
+        />
+        <PicturesBody
+          logged_in={this.state.logged_in}
+          username={this.state.username}
         />
         {form}
         <h3>
