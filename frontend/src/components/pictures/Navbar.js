@@ -11,7 +11,7 @@ export default class PicturesNavbar extends React.Component {
     render() {
         return (
             <Navbar bg="light" expand="lg">
-                <Navbar.Brand>Pictures</Navbar.Brand>
+                <Navbar.Brand href="/">Pictures</Navbar.Brand>
                 { this.props.logged_in
                     ?
                     <Navbar.Collapse id="navbar">
@@ -25,8 +25,10 @@ export default class PicturesNavbar extends React.Component {
                     :
                     <Navbar.Collapse id="navbar">
                         <Nav className="ml-auto">
-                            <Nav.Item><Nav.Link onClick={() => this.props.display_form('login')}>Log In</Nav.Link></Nav.Item>
-                            <Nav.Item><Nav.Link onClick={() => this.props.display_form('signup')}>Register</Nav.Link></Nav.Item>
+                            {/* <Nav.Item><Nav.Link onClick={() => this.props.display_form('login')}>Log In</Nav.Link></Nav.Item>
+                            <Nav.Item><Nav.Link onClick={() => this.props.display_form('signup')}>Register</Nav.Link></Nav.Item> */}
+                            <Nav.Item><Nav.Link href="/login">Login</Nav.Link></Nav.Item>
+                            <Nav.Item><Nav.Link href="register">Register</Nav.Link></Nav.Item>
                         </Nav>
                     </Navbar.Collapse>
                 }

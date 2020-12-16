@@ -1,88 +1,14 @@
-// import React from 'react';
-// import Cookies from 'js-cookie';
-// import './App.css';
-// import 'bootstrap/dist/css/bootstrap.min.css';
-// import Navbar from 'react-bootstrap/Navbar';
-// import Nav from 'react-bootstrap/Nav';
-// import PicturesBody from './components/PicturesBody.js';
-// import PicturesNavbar from './components/PicturesNavbar.js';
-// import PicturesLogin from './components/PicturesLogin.js';
-// import PicturesRegister from './components/PicturesRegister.js';
-
-// import { HashRouter as Router, Route, Switch, Redirect } from "react-router-dom";
-
-// class App extends React.Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             user: [],
-//             auth: [],
-//             loaded: false,
-//             csrftoken: Cookies.get('csrftoken'),
-//             sessionid: Cookies.get('sessionid'),
-//         };
-//     }
-
-//     componentDidMount() {
-//         fetch("http://127.0.0.1:8000/api/?format=json")
-//             .then(response => {
-//                 if (response.status > 400) {
-//                     return this.setState(() => {
-//                         return { placeholder: "Something went wrong."}
-//                     });
-//                 }
-//                 return response.json();
-//             })
-//             .then(
-//                 result => {
-//                     this.setState(() => {
-//                         return {
-//                             user: result.user,
-//                             auth: result.auth,
-//                             loaded: true
-//                         };
-//                     });
-//                 },
-//                 error => {
-//                     this.setState({
-//                         isLoaded: true,
-//                         error
-//                     });
-//                 }
-//             )
-//     }
-
-//     render() {
-//         const user = this.state.user;
-//         const auth = this.state.auth;
-//         return (
-//             <div className="App">
-//                 <Router>
-//                     <PicturesNavbar data={this.state.data} user={this.state.user} auth={this.state.auth} csrftoken={this.state.csrftoken} sessionid={this.state.sessionid}></PicturesNavbar>
-//                     <Switch>
-//                         <Route exact path="/" render={
-//                                 () => (<PicturesBody data={this.state.data} user={this.state.user} auth={this.state.auth}></PicturesBody>)
-//                             }
-//                         />
-//                         <Route exact path="/register" component={PicturesRegister} />
-//                         <Route exact path="/login" component={PicturesLogin} />
-//                     </Switch>
-//                 </Router>
-//             </div>
-//         );
-//     }
-// }
-
-// export default App;
-
-
 import React, { Component } from 'react';
-import Nav from './components/Nav';
-import LoginForm from './components/LoginForm';
-import SignupForm from './components/SignupForm';
-import PicturesNavbar from './components/PicturesNavbar';
+import LoginForm from './components/pictures/LoginForm';
+import RegisterForm from './components/pictures/RegisterForm';
+import PicturesNavbar from './components/pictures/Navbar';
 import PicturesBody from './components/PicturesBody';
+import Post from './components/pictures/Post';
 import './App.css';
+
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 class App extends Component {
   constructor(props) {
@@ -90,7 +16,8 @@ class App extends Component {
     this.state = {
       displayed_form: '',
       logged_in: localStorage.getItem('token') ? true : false,
-      username: ''
+      username: '',
+      redirect: null
     };
   }
 
@@ -123,12 +50,13 @@ class App extends Component {
         this.setState({
           logged_in: true,
           displayed_form: '',
-          username: json.user.username
+          username: json.user.username,
+          redirect: '/'
         });
       });
   };
 
-  handle_signup = (e, data) => {
+  handle_register = (e, data) => {
     e.preventDefault();
     fetch('http://localhost:8000/pictures/users/', {
       method: 'POST',
@@ -166,7 +94,7 @@ class App extends Component {
         form = <LoginForm handle_login={this.handle_login} />;
         break;
       case 'signup':
-        form = <SignupForm handle_signup={this.handle_signup} />;
+        form = <RegisterForm handle_signup={this.handle_signup} />;
         break;
       default:
         form = null;
@@ -174,22 +102,31 @@ class App extends Component {
 
     return (
       <div className="App">
-        <PicturesNavbar
-          logged_in={this.state.logged_in}
-          username={this.state.username}
-          display_form={this.display_form}
-          handle_logout={this.handle_logout}
-        />
-        <PicturesBody
-          logged_in={this.state.logged_in}
-          username={this.state.username}
-        />
-        {form}
-        <h3>
-          {this.state.logged_in
-            ? `Hello, ${this.state.username}`
-            : 'Please Log In'}
-        </h3>
+        <Router>
+          <PicturesNavbar
+            logged_in={this.state.logged_in}
+            username={this.state.username}
+            display_form={this.display_form}
+            handle_logout={this.handle_logout}
+          />
+          <Route exact path="/">
+            <PicturesBody
+              logged_in={this.state.logged_in}
+              username={this.state.username}
+            />
+          </Route>
+          <Route exact path="/login">
+            <LoginForm handle_login={this.handle_login} />
+          </Route>
+          <Route exact path="/logout">
+          </Route>
+          <Route exact path="/register">
+            <RegisterForm handle_register={this.handle_register} />
+          </Route>
+          <Route exact path="/post">
+            <Post />
+          </Route>
+        </Router>
       </div>
     );
   }
