@@ -7,17 +7,39 @@ import Button from 'react-bootstrap/Button';
 export default class PicturesPosts extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            posts: []
+        }
+    }
+
+    componentDidMount() {
+        fetch('http://localhost:8000/pictures/posts/', {
+            headers: {
+                Authorization: `JWT ${localStorage.getItem('token')}`
+            }
+        })
+        .then(res => res.json())
+        .then(json => {
+            console.log(json);
+            if (json.detail) {
+                console.log(json.detail);
+            } else {
+                this.setState({ posts: json });
+            }
+            return null;
+        });
     }
 
     render() {
-        console.log(this.props.posts);
+        console.log(this.state.posts);
 
         return (
             <div>
-                {this.props.posts.map(
+                {this.state.posts.map(
                     post => <PostCard
-                        post = {post}
-                        logged_in = {this.props.logged_in}
+                        key={post.uniqueId}
+                        post={post}
+                        logged_in={this.props.logged_in}
                     />
                 )}
             </div>
@@ -53,6 +75,8 @@ function Options(props) {
     if (isCreatedByUser) {
         return <UserOptions />;
     }
+    
+    return null;
 }
 
 
@@ -89,6 +113,8 @@ function LikeButton(props) {
             <a style={likeStyle} className="fa fa-heart-o text-danger"> </a>
         );
     }
+
+    return null;
 }
 
 function Comment(props) {
@@ -98,4 +124,6 @@ function Comment(props) {
             <Card.Text className="text-muted">Comment</Card.Text>
         );
     }
+
+    return null;
 }

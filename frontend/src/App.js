@@ -23,7 +23,11 @@ export default class App extends Component {
             user_id: null,
             username: '',
             redirect: null,
-            posts: []
+            post_redirect: null,
+            posts: [],
+            history: null,
+            post_page: 1
+
         };
     }
 
@@ -42,21 +46,6 @@ export default class App extends Component {
             localStorage.removeItem('token');
             this.setState({ logged_in: false, username: '', user_id: null });
         }
-        fetch('http://localhost:8000/pictures/posts/', {
-            headers: {
-                Authorization: `JWT ${localStorage.getItem('token')}`
-            }
-        })
-        .then(res => res.json())
-        .then(json => {
-            console.log(json);
-            if (json.detail) {
-                console.log(json.detail);
-            } else {
-                this.setState({ posts: json });
-            }
-            return null;
-        });
     }
 
     handle_login = (e, data) => {
@@ -98,25 +87,6 @@ export default class App extends Component {
                 displayed_form: '',
                 username: json.username,
                 user_id: json.id,
-                redirect: '/'
-            });
-        });
-    };
-
-    handle_post = (e, data) => {
-        e.preventDefault();
-        fetch('http://localhost:8000/pictures/posts/', {
-            method: 'POST',
-            headers: {
-                'Authorization': "JWT " + localStorage.getItem('token'),
-                'Content-Type': 'application/json',
-                'accept': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        .then(res => res.json())
-        .then(json => {
-            this.setState({
                 redirect: '/'
             });
         });
@@ -164,8 +134,9 @@ export default class App extends Component {
                                     user_id={this.state.user_id}
                                     handle_post={this.handle_post}
                                     username={this.state.username}
-                                    redirect={this.state.redirect}
                                     posts={this.state.posts}
+                                    post_redirect={this.state.post_redirect}
+                                    history={this.state.history}
                                 />
                             </Route>
                             <Route exact path="/login">
@@ -188,7 +159,14 @@ export default class App extends Component {
                                 />
                             </Route>
                             <Route exact path="/all_posts">
-                                <PicturesAllPosts />
+                                <PicturesAllPosts 
+                                    logged_in={this.state.logged_in}
+                                    user_id={this.state.user_id}
+                                    handle_post={this.handle_post}
+                                    username={this.state.username}
+                                    redirect={this.state.redirect}
+                                    posts={this.state.posts}
+                                />
                             </Route>
                             <Route exact path="/following">
                                 <Following

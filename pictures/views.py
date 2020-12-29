@@ -4,6 +4,7 @@ from rest_framework import permissions, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.pagination import PageNumberPagination
 from .serializers import UserSerializer, UserSerializerWithToken, PostSerializer, PostListSerializer, LikeSerializer, LikeListSerializer, FollowSerializer, FollowListSerializer
 from .models import Post, Like, Follow
 
@@ -76,12 +77,13 @@ class PostList(APIView):
     Create a new post. It's called 'PostList' because normally we'd have a get
     method here too, for retrieving a list of all Post objects.
     """
-
     permission_classes = (permissions.AllowAny,)
 
     def get(self, request, format=None):
-        posts = Post.objects.all()
-        serializer = PostListSerializer(posts, many=True)
+        posts = Post.objects.all().order_by('created_at').reverse()
+        paginator = PageNumberPagination()
+        result_page = paginator.paginate_queryset(posts, request)
+        serializer = PostListSerializer(result_page, many=True)
         return Response(serializer.data)
 
 

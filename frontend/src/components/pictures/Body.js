@@ -17,7 +17,8 @@ export default class PicturesBody extends React.Component {
             postForm = <NewPostForm
                             user_id={this.props.user_id}
                             handle_post={this.props.handle_post}
-                            redirect={this.props.redirect}
+                            post_redirect={this.props.post_redirect}
+                            history={this.props.history}
                         />
         }
 
@@ -32,7 +33,6 @@ export default class PicturesBody extends React.Component {
                     user_id={this.props.user_id}
                     handle_post={this.handle_post}
                     username={this.props.username}
-                    redirect={this.props.redirect}
                     posts={this.props.posts}
                 />
                 <Paginator />
