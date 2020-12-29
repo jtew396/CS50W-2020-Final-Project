@@ -1,3 +1,4 @@
 Django & React: JTW Authentication
 * https://medium.com/@dakota.lillie/django-react-jwt-authentication-5015ee00ef9a
 
+<input type="hidden" id="created_by_id" name="created_by_id" value={this.props.user_id} />

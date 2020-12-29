@@ -3,6 +3,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 
+console.log('Navbar', Navbar);
+console.log('Nav', Nav);
+
 export default class PicturesNavbar extends React.Component {
     constructor(props) {
         super(props);
@@ -16,19 +19,23 @@ export default class PicturesNavbar extends React.Component {
                     ?
                     <Navbar.Collapse id="navbar">
                           <Nav className="mr-auto">
-                              <Nav.Item><Nav.Link><strong>{this.props.username}</strong></Nav.Link></Nav.Item>
+                              <Nav.Link href={"/profile/" + this.props.username}><strong>{this.props.username}</strong></Nav.Link>
+                              <Nav.Link href="/all_posts">All Posts</Nav.Link>
+                              <Nav.Link href="/following">Following</Nav.Link>
+                              <Nav.Link href="/post">Create Post</Nav.Link>
                           </Nav>
                           <Nav className="ml-auto">
-                              <Nav.Item><Nav.Link onClick={this.props.handle_logout}>Log Out</Nav.Link></Nav.Item>
+                              <Nav.Link onClick={this.props.handle_logout}>Log Out</Nav.Link>
                           </Nav>
                     </Navbar.Collapse>
                     :
                     <Navbar.Collapse id="navbar">
+                        <Nav className="mr-auto">
+                            <Nav.Link href="/all_posts">All Posts</Nav.Link>
+                        </Nav>
                         <Nav className="ml-auto">
-                            {/* <Nav.Item><Nav.Link onClick={() => this.props.display_form('login')}>Log In</Nav.Link></Nav.Item>
-                            <Nav.Item><Nav.Link onClick={() => this.props.display_form('signup')}>Register</Nav.Link></Nav.Item> */}
-                            <Nav.Item><Nav.Link href="/login">Login</Nav.Link></Nav.Item>
-                            <Nav.Item><Nav.Link href="register">Register</Nav.Link></Nav.Item>
+                            <Nav.Link href="/login">Login</Nav.Link>
+                            <Nav.Link href="/register">Register</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 }

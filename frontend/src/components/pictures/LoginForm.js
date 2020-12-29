@@ -8,48 +8,43 @@ import Button from 'react-bootstrap/Button';
 import { Redirect } from 'react-router-dom';
 
 export default class LoginForm extends React.Component {
-  state = {
-    username: '',
-    password: ''
-  };
+    constructor(props) {
+        super(props);
+        this.state = {
+            username: '',
+            password: ''
+        };
+    }
 
-  handle_change = e => {
-    const name = e.target.name;
-    const value = e.target.value;
-    this.setState(prevstate => {
-      const newState = { ...prevstate };
-      newState[name] = value;
-      return newState;
-    });
-  };
+    handle_change = e => {
+        const name = e.target.name;
+        const value = e.target.value;
+        this.setState(prevstate => {
+            const newState = { ...prevstate };
+            newState[name] = value;
+            return newState;
+        });
+    };
 
   render() {
     if (this.props.redirect) {
-      return <Redirect to={this.props.redirect} />
+        return <Redirect to={this.props.redirect} />
     }
 
-    let isLoggedIn = this.props.is_logged_in;
-    let message;
-    if (isLoggedIn) {
-      message = <div>This is the message.</div>
-    } else {
-      message = null;
-    }
     return (
-      <Container>
+      <Container className="text-center">
         <Row className="m-3">
           <Col></Col>
           <Col>
-            <h2>Login</h2>  
-            {message}
+            <h2>Login</h2>
             <Form onSubmit={e => this.props.handle_login(e, this.state)}>
               <Form.Group>
                 {/* <Form.Label htmlFor="username">Username</Form.Label> */}
-                <Form.Control type="text" name="username" value={this.state.username} onChange={this.handle_change}></Form.Control>
+                <Form.Control htmlFor="username" type="text" name="username" value={this.state.username} onChange={this.handle_change}></Form.Control>
               </Form.Group>
               <Form.Group>
                 {/* <Form.Label htmlFor="password">Password</Form.Label> */}
-                <Form.Control type="password" name="password" value={this.state.password} onChange={this.handle_change}></Form.Control>
+                <Form.Control htmlFor="password" type="password" name="password" value={this.state.password} onChange={this.handle_change}></Form.Control>
               </Form.Group>
               <Form.Group>
                 <Button variant="primary" type="submit">Submit</Button>
@@ -67,5 +62,5 @@ export default class LoginForm extends React.Component {
 
 
 LoginForm.propTypes = {
-  handle_login: PropTypes.func.isRequired
+    handle_login: PropTypes.func.isRequired
 };
