@@ -2,7 +2,6 @@ import React from 'react';
 import Card from 'react-bootstrap/Card';
 import PicturesPosts from './Posts';
 import NewPostForm from './NewPostForm';
-import Paginator from './Paginator';
 
 export default class PicturesBody extends React.Component {
     constructor(props) {
@@ -27,7 +26,6 @@ export default class PicturesBody extends React.Component {
                 <h1>All Posts</h1>
                 {postForm}
                 <br/>
-                <Paginator />
                 <PicturesPosts
                     logged_in={this.props.logged_in}
                     user_id={this.props.user_id}
@@ -35,7 +33,6 @@ export default class PicturesBody extends React.Component {
                     username={this.props.username}
                     posts={this.props.posts}
                 />
-                <Paginator />
             </div>
         );
     }

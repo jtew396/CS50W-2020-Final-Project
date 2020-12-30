@@ -170,7 +170,12 @@ export default class App extends Component {
                             </Route>
                             <Route exact path="/following">
                                 <Following
+                                    logged_in={this.state.logged_in}
                                     user_id={this.state.user_id}
+                                    handle_post={this.handle_post}
+                                    username={this.state.username}
+                                    redirect={this.state.redirect}
+                                    posts={this.state.posts}
                                 />
                             </Route>
                             <Route exact path="/profile/:username">

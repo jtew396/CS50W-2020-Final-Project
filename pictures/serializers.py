@@ -1,15 +1,32 @@
 from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
+from rest_framework.fields import CurrentUserDefault
+from django.core import serializers as core_serializer
 from django.contrib.auth.models import User
 from .models import Post, Like, Follow
 
 
 class UserSerializer(serializers.ModelSerializer):
-    # posts = serializers.PrimaryKeyRelatedField(many=True, queryset=Post.objects.all())
+    posts = serializers.SerializerMethodField()
+    followees = serializers.SerializerMethodField()
+    followers = serializers.SerializerMethodField()
+
+    def get_posts(self, obj):
+        posts = Post.objects.filter(created_by=obj).order_by('created_at').reverse().values()
+        return posts
+    
+    def get_followees(self, obj):
+        followees = Follow.objects.filter(follower=obj).count()
+        return followees
+
+    def get_followers(self, obj):
+        followers = Follow.objects.filter(followee=obj).count()
+        return followers
 
     class Meta:
         model = User
-        fields = ['id', 'username']
+        fields = ['id', 'username', 'posts', 'followees', 'followers']
+        depth = 1
 
 
 class UserSerializerWithToken(serializers.ModelSerializer):
@@ -46,6 +63,7 @@ class PostSerializer(serializers.ModelSerializer):
 
 class PostListSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField()
+    user_liked = serializers.SerializerMethodField()
     created_by_username = serializers.SerializerMethodField()
     # user_liked = serializers.SerializerMethodField()
 
@@ -54,6 +72,17 @@ class PostListSerializer(serializers.ModelSerializer):
         print(obj)
         likes = Like.objects.filter(post=obj).count()
         return likes
+    
+    def get_user_liked(self, obj):
+        user = None
+        request = self.context.get("request")
+        if request and hasattr(request, "user"):
+            user = request.user
+            print('Made it to request user in post list serializer')
+            print(request.user)
+            return obj.user_liked(user)
+        else:
+            return False
 
     def get_created_by_username(self, obj):
         created_by_username = User.objects.get(post=obj)

@@ -13,9 +13,13 @@ export default class PicturesAllPosts extends React.Component {
         return (
             <div>
                 <h1>All Posts</h1>
-                <Paginator></Paginator>
-                <PicturesPosts></PicturesPosts>
-                <Paginator></Paginator>
+                <PicturesPosts
+                    logged_in={this.props.logged_in}
+                    user_id={this.props.user_id}
+                    handle_post={this.handle_post}
+                    username={this.props.username}
+                    posts={this.props.posts}
+                />
             </div>
         );
     }

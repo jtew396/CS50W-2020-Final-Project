@@ -11,9 +11,14 @@ export default class Following extends React.Component {
         return (
             <div>
                 <h1>Following Posts</h1>
-                <Paginator />
-                <PicturesPosts />
-                <Paginator />
+                <PicturesPosts 
+                    logged_in={this.props.logged_in}
+                    user_id={this.props.user_id}
+                    handle_post={this.handle_post}
+                    username={this.props.username}
+                    redirect={this.props.redirect}
+                    posts={this.props.posts}
+                />
             </div>
         );
     }

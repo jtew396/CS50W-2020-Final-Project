@@ -9,6 +9,31 @@ import { useParams } from 'react-router';
 export default class Profile extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            user_id: 0,
+            username: this.props.username,
+            following_count: 0,
+            followers_count: 0
+        }
+    }
+
+    componentDidMount() {
+        fetch('http://localhost:8000/pictures/user/' + window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1), {})
+        .then(res => res.json())
+        .then(json => {
+            console.log(json);
+            if (json.detail) {
+                console.log(json.detail);
+            } else {
+                this.setState({ 
+                    user_id: json.id,
+                    username: json.username,
+                    following_count: json.followees,
+                    followers_count: json.followers
+                });
+            }
+            return null;
+        });
     }
 
 
@@ -24,19 +49,20 @@ export default class Profile extends React.Component {
                     <Card.Body>
                         <Row>
                             <Col>
-                                <div>
-                                    <h5 className="pull-left"><Username /></h5>
+                                <div className="pull-left">
+                                    <Card.Title><Username /></Card.Title>
                                 </div>
-                                <div>
+                                <div className="pull-right">
+                                    <FollowOptions isLoggedIn={true} />
                                 </div>
                             </Col>
                         </Row>
                         <Row>
                             <Col>
-                                <Card.Text>{ this.props.following_count } Following</Card.Text>
+                                <Card.Text>{ this.state.following_count } Following</Card.Text>
                             </Col>
                             <Col>
-                                <Card.Text>{ this.props.followers_count } Followers</Card.Text>
+                                <Card.Text>{ this.state.followers_count } Followers</Card.Text>
                             </Col>
                         </Row>
                     </Card.Body>
@@ -44,9 +70,7 @@ export default class Profile extends React.Component {
                 <br/>
                 <br/>
                 <h1>Posts</h1>
-                <Paginator></Paginator>
-                <PicturesPosts></PicturesPosts>
-                <Paginator></Paginator>
+                <PicturesPosts profile_user_id={this.state.user_id}/>
             </div>
         )
     }
@@ -55,4 +79,8 @@ export default class Profile extends React.Component {
 function Username() {
     let { username } = useParams();
     return username;
+}
+
+function FollowOptions() {
+    return null;
 }

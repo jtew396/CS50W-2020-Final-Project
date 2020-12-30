@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Pagination from 'react-bootstrap/Pagination';
 
 export default class Paginator extends React.Component {
@@ -7,16 +7,15 @@ export default class Paginator extends React.Component {
     }
 
     render() {
+        const currentPage = this.props.page;
+        const nextLink = this.props.next_link;
+        const prevLink = this.props.prev_link;
+
         return (
             <nav aria-label="...">
                 <Pagination>
-                    <Pagination.First />
-                    <Pagination.Prev />
-                    <Pagination.Item>{1}</Pagination.Item>
-                    <Pagination.Ellipsis />
-                    <Pagination.Item>{10}</Pagination.Item>
-                    <Pagination.Next />
-                    <Pagination.Last />
+                    <Previous currentPage={this.props.page} prevLink={this.props.prev_link} handle_page_change={this.props.handle_page_change}/>
+                    <Next currentPage={this.props.page} nextLink={this.props.next_link} handle_page_change={this.props.handle_page_change}/>
                 </Pagination>
                 {/* <ul class="pagination">
                     {% if page_obj.has_previous %}
@@ -49,5 +48,26 @@ export default class Paginator extends React.Component {
                 </ul> */}
             </nav>
         )
+    }
+}
+
+function Previous(props) {
+    const currentPage = props.currentPage;
+    const prevLink = props.prevLink;
+    if (prevLink) {
+        return <Pagination.Prev onClick={link => props.handle_page_change(prevLink)} value={prevLink}/>;
+    } else {
+        return <Pagination.Prev disabled={true}/>
+    }
+}
+
+function Next(props) {
+    const currentPage = props.currentPage;
+    const nextLink = props.nextLink;
+    console.log(nextLink);
+    if (nextLink) {
+        return <Pagination.Next onClick={link => props.handle_page_change(nextLink)} value={nextLink}/>;
+    } else {
+        return <Pagination.Next disabled={true}/>;
     }
 }

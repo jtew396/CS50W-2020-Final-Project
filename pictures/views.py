@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
 from rest_framework import permissions, status
 from rest_framework.decorators import api_view
@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from .serializers import UserSerializer, UserSerializerWithToken, PostSerializer, PostListSerializer, LikeSerializer, LikeListSerializer, FollowSerializer, FollowListSerializer
 from .models import Post, Like, Follow
+from .pagination import PaginationHandlerMixin
+import json
 
 
 @api_view(['GET'])
@@ -71,8 +73,39 @@ class UserDetail(APIView):
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class UserDetailByUsername(APIView):
+    """
+    Retrieve, update or delete a user instance.
+    """
 
-class PostList(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def get_object(self, username):
+        try:
+            return User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise Http404
+
+    def get(self, request, username, format=None):
+        user = self.get_object(username)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+    def put(self, request, username, format=None):
+        user = self.get_object(username)
+        serializer = UserSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, username, format=None):
+        user = self.get_object(username)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class PostList(APIView, PaginationHandlerMixin):
     """
     Create a new post. It's called 'PostList' because normally we'd have a get
     method here too, for retrieving a list of all Post objects.
@@ -81,10 +114,29 @@ class PostList(APIView):
 
     def get(self, request, format=None):
         posts = Post.objects.all().order_by('created_at').reverse()
+        print('We made it to the get route of post list')
+        print(request)
+        created_by = request.GET.get('created_by', '')
+        print(created_by)
+        if created_by:
+            user = None
+            if User.objects.filter(id=created_by).count() == 1:
+                user = User.objects.get(id=created_by)
+            posts = posts.filter(created_by=user)
+        # if created_by:
+        #     print('Did we make it past created_by')
+        #     user = User.objects.get(id=created_by)
+        #     posts = posts.filter(created_by=user)
         paginator = PageNumberPagination()
         result_page = paginator.paginate_queryset(posts, request)
         serializer = PostListSerializer(result_page, many=True)
-        return Response(serializer.data)
+        return Response({
+            'links': {
+                'next': paginator.get_next_link(),
+                'previous': paginator.get_previous_link()
+            },
+            'data': serializer.data
+        })
 
 
     def post(self, request, format=None):
@@ -109,11 +161,19 @@ class PostList(APIView):
         print('We went to perform create')
         serializer.save(created_by=self.request.user)
 
+    @property
+    def get_paginated_response(self, data):
+        assert self.paginator is not None
+        return self.paginator.get_paginated_response(data)
+
 
 class PostDetail(APIView):
     """
     Retrieve, update or delete a post instance.
     """
+
+    permission_classes = (permissions.AllowAny,)
+
     def get_object(self, pk):
         try:
             return Post.objects.get(pk=pk)
@@ -169,22 +229,25 @@ class LikeList(APIView):
 
 
     def post(self, request, format=None):
-        print('We posted.')
-        print('This is the data: ')
         print(request.data)
-        print('This is the user: ')
-        print(request.user)
-        print('This is the user id: ')
-        print(request.user.id)
-        data = request.data
-        data['created_by'] = request.user.id
-        print('This is the data: ')
-        print(data)
-        serializer = LikeSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        post_id = request.data['post_id']
+        if Post.objects.filter(pk=post_id).count() == 1:
+            p = Post.objects.get(pk=post_id)
+            if Like.objects.filter(post=p, created_by=request.user.id).count() == 0:
+                l = Like(
+                    post=p,
+                    created_by=request.user
+                )
+                l.save()
+                return HttpResponse('Liked')
+            else:
+                l = Like.objects.get(post=p, created_by=request.user)
+                if l.delete():
+                    return HttpResponse('Unliked')
+                else:
+                    return HttpResponse('Error')
+        else:
+            return HttpResponse('Error')
 
 class LikeDetail(APIView):
     """
