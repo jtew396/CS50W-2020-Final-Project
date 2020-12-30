@@ -6,6 +6,24 @@ import NewPostForm from './NewPostForm';
 export default class PicturesBody extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            update_posts: false
+        }
+        this.makeUpdatePosts = this.makeUpdatePosts.bind(this);
+    }
+
+    makeUpdatePosts() {
+        console.log('We made it to the makeUpdatePosts');
+        if (this.state.update_posts) {
+            this.setState({
+                update_posts: false
+            })
+        } else {
+            this.setState({
+                update_posts: true
+            })
+        }
+        console.log(this.state.update_posts);
     }
 
 
@@ -18,6 +36,7 @@ export default class PicturesBody extends React.Component {
                             handle_post={this.props.handle_post}
                             post_redirect={this.props.post_redirect}
                             history={this.props.history}
+                            makeUpdatePosts={this.makeUpdatePosts}
                         />
         }
 
@@ -32,6 +51,8 @@ export default class PicturesBody extends React.Component {
                     handle_post={this.handle_post}
                     username={this.props.username}
                     posts={this.props.posts}
+                    update_posts={this.state.update_posts}
+                    makeUpdatePosts={this.makeUpdatePosts}
                 />
             </div>
         );

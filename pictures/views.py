@@ -114,22 +114,15 @@ class PostList(APIView, PaginationHandlerMixin):
 
     def get(self, request, format=None):
         posts = Post.objects.all().order_by('created_at').reverse()
-        print('We made it to the get route of post list')
-        print(request)
         created_by = request.GET.get('created_by', '')
-        print(created_by)
         if created_by:
             user = None
             if User.objects.filter(id=created_by).count() == 1:
                 user = User.objects.get(id=created_by)
             posts = posts.filter(created_by=user)
-        # if created_by:
-        #     print('Did we make it past created_by')
-        #     user = User.objects.get(id=created_by)
-        #     posts = posts.filter(created_by=user)
         paginator = PageNumberPagination()
         result_page = paginator.paginate_queryset(posts, request)
-        serializer = PostListSerializer(result_page, many=True)
+        serializer = PostListSerializer(result_page, context={'request': request}, many=True)
         return Response({
             'links': {
                 'next': paginator.get_next_link(),
@@ -140,17 +133,8 @@ class PostList(APIView, PaginationHandlerMixin):
 
 
     def post(self, request, format=None):
-        print('We posted.')
-        print('This is the data: ')
-        print(request.data)
-        print('This is the user: ')
-        print(request.user)
-        print('This is the user id: ')
-        print(request.user.id)
         data = request.data
         data['created_by'] = request.user.id
-        print('This is the data: ')
-        print(data)
         serializer = PostSerializer(data=data)
         if serializer.is_valid():
             serializer.save()

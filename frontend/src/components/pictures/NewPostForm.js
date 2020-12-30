@@ -13,9 +13,6 @@ export default class PicturesNewPost extends React.Component {
             content: '',
             post_redirect: null
         };
-
-        this.handle_change = this.handle_change.bind(this);
-        this.handle_post = this.handle_post.bind(this);
     }
 
     handle_post = (e, data) => {
@@ -30,13 +27,16 @@ export default class PicturesNewPost extends React.Component {
             body: JSON.stringify(data)
         })
         .then(res => res.json())
-        console.log(window.location.href);
+        .then(json => {
+            this.setState({
+                content: ''
+            })
+            this.props.makeUpdatePosts();
+        })
         if (window.location.href === 'http://localhost:3000/post') {
             this.setState({
                 post_redirect: '/'
             });
-        } else {
-            window.location.reload();
         }
     };
 

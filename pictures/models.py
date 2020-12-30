@@ -14,7 +14,9 @@ class Post(models.Model):
         return Like.objects.filter(post=self).count()
 
     def user_liked(self, user):
-        if Like.objects.filter(post=self, created_by=user) == 1:
+        print('This is the user')
+        print(user)
+        if Like.objects.filter(post=self, created_by=user).count() == 1:
             return True
         else:
             return False

@@ -41,10 +41,7 @@ export default class App extends Component {
             .then(res => res.json())
             .then(json => {
                 this.setState({ username: json.username, user_id: json.id });
-            });
-        } else {
-            localStorage.removeItem('token');
-            this.setState({ logged_in: false, username: '', user_id: null });
+            })
         }
     }
 

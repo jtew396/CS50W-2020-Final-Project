@@ -2,5 +2,5 @@ django
 djangorestframework
 djangorestframework-jwt
 django-cors-headers
-markdown
+django-markdown
 django-filter

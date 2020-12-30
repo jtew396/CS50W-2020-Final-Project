@@ -68,19 +68,20 @@ class PostListSerializer(serializers.ModelSerializer):
     # user_liked = serializers.SerializerMethodField()
 
     def get_likes(self, obj):
-        print('This is the obj: ')
-        print(obj)
         likes = Like.objects.filter(post=obj).count()
         return likes
     
     def get_user_liked(self, obj):
         user = None
+        user = None
         request = self.context.get("request")
         if request and hasattr(request, "user"):
             user = request.user
-            print('Made it to request user in post list serializer')
-            print(request.user)
-            return obj.user_liked(user)
+            print(user)
+            print(user.id)
+            print(obj.user_liked(user.id))
+            print(obj.id)
+            return obj.user_liked(user.id)
         else:
             return False
 

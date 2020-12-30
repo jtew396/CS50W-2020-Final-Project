@@ -10,7 +10,7 @@ export default class Profile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            user_id: 0,
+            profile_id: null,
             username: this.props.username,
             following_count: 0,
             followers_count: 0
@@ -26,7 +26,7 @@ export default class Profile extends React.Component {
                 console.log(json.detail);
             } else {
                 this.setState({ 
-                    user_id: json.id,
+                    profile_id: json.id,
                     username: json.username,
                     following_count: json.followees,
                     followers_count: json.followers
@@ -40,7 +40,8 @@ export default class Profile extends React.Component {
     render() {
         let isLoggedIn = this.props.logged_in;
         let isFollowing = this.props.is_following;
-
+        console.log('printing the profile id')
+        console.log(this.state.profile_id);
 
         return (
             <div>
@@ -70,7 +71,7 @@ export default class Profile extends React.Component {
                 <br/>
                 <br/>
                 <h1>Posts</h1>
-                <PicturesPosts profile_user_id={this.state.user_id}/>
+                <PicturesPosts profile_user_id={this.state.profile_id}/>
             </div>
         )
     }
