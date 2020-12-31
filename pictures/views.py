@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.contrib.auth.models import User
 from rest_framework import permissions, status
 from rest_framework.decorators import api_view

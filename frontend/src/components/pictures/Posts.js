@@ -20,91 +20,166 @@ export default class PicturesPosts extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.profile_user_id ) {
-            fetch('http://localhost:8000/pictures/posts/?page=' + String(this.state.page) + '&created_by=' + String(this.props.profile_user_id), {
-                headers: {
-                    Authorization: `JWT ${localStorage.getItem('token')}`
-                }
-            })
-            .then(res => res.json())
-            .then(json => {
-                console.log(json);
-                if (json.detail) {
-                    console.log(json.detail);
-                } else {
-                    this.setState({ 
-                        posts: json.data,
-                        next_link: json.links.next,
-                        prev_link: json.links.previous
-                    });
-                }
-                return null;
-            });
+        if (this.props.logged_in) {
+            if (this.props.profile_id) {
+                fetch('http://localhost:8000/pictures/posts/?page=' + String(this.state.page) + '&created_by=' + String(this.props.profile_id) + '&requested_by=' + String(this.props.user_id), {
+                    headers: {
+                        Authorization: `JWT ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(res => res.json())
+                .then(json => {
+                    console.log(json);
+                    if (json.detail) {
+                        console.log(json.detail);
+                    } else {
+                        this.setState({ 
+                            posts: json.data,
+                            next_link: json.links.next,
+                            prev_link: json.links.previous
+                        });
+                    }
+                    return null;
+                });
+            } else {
+                fetch('http://localhost:8000/pictures/posts/?page=' + String(this.state.page) + '&requested_by=' + String(this.props.user_id), {
+                    headers: {
+                        Authorization: `JWT ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(res => res.json())
+                .then(json => {
+                    console.log(json);
+                    if (json.detail) {
+                        console.log(json.detail);
+                    } else {
+                        this.setState({ 
+                            posts: json.data,
+                            next_link: json.links.next,
+                            prev_link: json.links.previous
+                        });
+                    }
+                    return null;
+                });
+            }
         } else {
-            fetch('http://localhost:8000/pictures/posts/?page=' + String(this.state.page), {
-                headers: {
-                    Authorization: `JWT ${localStorage.getItem('token')}`
-                }
-            })
-            .then(res => res.json())
-            .then(json => {
-                console.log(json);
-                if (json.detail) {
-                    console.log(json.detail);
-                } else {
-                    this.setState({ 
-                        posts: json.data,
-                        next_link: json.links.next,
-                        prev_link: json.links.previous
-                    });
-                }
-                return null;
-            });
+            console.log('For some reason we having problems');
+            console.log(this.props.profile_id);
+            if (this.props.profile_id) {
+                fetch('http://localhost:8000/pictures/posts/?page=' + String(this.state.page) + '&created_by=' + String(this.props.profile_id), {})
+                .then(res => res.json())
+                .then(json => {
+                    console.log(json);
+                    if (json.detail) {
+                        console.log(json.detail);
+                    } else {
+                        this.setState({ 
+                            posts: json.data,
+                            next_link: json.links.next,
+                            prev_link: json.links.previous
+                        });
+                    }
+                    return null;
+                });
+            } else {
+                fetch('http://localhost:8000/pictures/posts/?page=' + String(this.state.page), {})
+                .then(res => res.json())
+                .then(json => {
+                    console.log(json);
+                    if (json.detail) {
+                        console.log(json.detail);
+                    } else {
+                        this.setState({ 
+                            posts: json.data,
+                            next_link: json.links.next,
+                            prev_link: json.links.previous
+                        });
+                    }
+                    return null;
+                });
+            }
         }
     }
 
     updatePosts() {
-        if (this.props.profile_user_id) {
-            fetch('http://localhost:8000/pictures/posts/?page=' + String(this.state.page) + '&created_by=' + String(this.props.profile_user_id), {
-                headers: {
-                    Authorization: `JWT ${localStorage.getItem('token')}`
-                }
-            })
-            .then(res => res.json())
-            .then(json => {
-                console.log(json);
-                if (json.detail) {
-                    console.log(json.detail);
-                } else {
-                    this.setState({ 
-                        posts: json.data,
-                        next_link: json.links.next,
-                        prev_link: json.links.previous
-                    });
-                }
-                return null;
-            });
+        if (this.props.logged_in) {
+            if (this.props.profile_id) {
+                fetch('http://localhost:8000/pictures/posts/?page=' + String(this.state.page) + '&created_by=' + String(this.props.profile_id) + '&requested_by=' + String(this.props.user_id), {
+                    headers: {
+                        Authorization: `JWT ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(res => res.json())
+                .then(json => {
+                    console.log(json);
+                    if (json.detail) {
+                        console.log(json.detail);
+                    } else {
+                        this.setState({ 
+                            posts: json.data,
+                            next_link: json.links.next,
+                            prev_link: json.links.previous
+                        });
+                    }
+                    return null;
+                });
+            } else {
+                fetch('http://localhost:8000/pictures/posts/?page=' + String(this.state.page) + '&requested_by=' + String(this.props.user_id), {
+                    headers: {
+                        Authorization: `JWT ${localStorage.getItem('token')}`
+                    }
+                })
+                .then(res => res.json())
+                .then(json => {
+                    console.log(json);
+                    if (json.detail) {
+                        console.log(json.detail);
+                    } else {
+                        this.setState({ 
+                            posts: json.data,
+                            next_link: json.links.next,
+                            prev_link: json.links.previous
+                        });
+                    }
+                    return null;
+                });
+            }
         } else {
-            fetch('http://localhost:8000/pictures/posts/?requested_by=' + String(this.props.user_id), {
-                headers: {
-                    Authorization: `JWT ${localStorage.getItem('token')}`
-                }
-            })
-            .then(res => res.json())
-            .then(json => {
-                console.log(json);
-                if (json.detail) {
-                    console.log(json.detail);
-                } else {
-                    this.setState({ 
-                        posts: json.data,
-                        next_link: json.links.next,
-                        prev_link: json.links.previous,
-                        update_posts: false
-                    });
-                }
-                return null;
-            });
+            console.log('For some reason we having problems');
+            console.log(this.props.profile_id);
+            if (this.props.profile_id) {
+                fetch('http://localhost:8000/pictures/posts/?page=' + String(this.state.page) + '&created_by=' + String(this.props.profile_id), {})
+                .then(res => res.json())
+                .then(json => {
+                    console.log(json);
+                    if (json.detail) {
+                        console.log(json.detail);
+                    } else {
+                        this.setState({ 
+                            posts: json.data,
+                            next_link: json.links.next,
+                            prev_link: json.links.previous
+                        });
+                    }
+                    return null;
+                });
+            } else {
+                fetch('http://localhost:8000/pictures/posts/?page=' + String(this.state.page), {})
+                .then(res => res.json())
+                .then(json => {
+                    console.log(json);
+                    if (json.detail) {
+                        console.log(json.detail);
+                    } else {
+                        this.setState({ 
+                            posts: json.data,
+                            next_link: json.links.next,
+                            prev_link: json.links.previous
+                        });
+                    }
+                    return null;
+                });
+            }
         }
     }
 
@@ -135,8 +210,9 @@ export default class PicturesPosts extends React.Component {
             this.updatePosts();
             this.props.makeUpdatePosts();
         }
-        if (this.props.profile_user_id) {
+        if (this.props.pullprofileposts && this.props.profile_id) {
             this.updatePosts();
+            this.props.makePullProfile();
         }
 
         return (
