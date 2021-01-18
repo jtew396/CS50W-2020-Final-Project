@@ -14,7 +14,7 @@ export default class PicturesNavbar extends React.Component {
     render() {
         return (
             <Navbar bg="light" expand="lg">
-                <Navbar.Brand href="/">Pictures</Navbar.Brand>
+                <Navbar.Brand href="/">Weather</Navbar.Brand>
                 { this.props.logged_in
                     ?
                     <Navbar.Collapse id="navbar">

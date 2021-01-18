@@ -20,5 +20,6 @@ from rest_framework_jwt.views import obtain_jwt_token
 
 urlpatterns = [
     path('pictures/', include('pictures.urls')),
+    path('weather/', include('weather.urls')),
     path('token-auth/', obtain_jwt_token)
 ]
