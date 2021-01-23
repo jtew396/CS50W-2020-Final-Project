@@ -1,5 +1,6 @@
 import React from 'react';
-import apiConfig from '/src/apiKeys';
+import DayCard from 'DayCard.js';
+import apiConfig from './../../apiKeys';
 
 export default class WeekContainer extends React.Component {
     state = {
@@ -8,8 +9,9 @@ export default class WeekContainer extends React.Component {
     }
 
     componentDidMount = () => {
-        const weatherURL =
-        `http://api.openweathermap.org/data/2.5/forecast?zip=11102&units=imperial&APPID=${apiConfig.owmKey}`
+        console.log(apiConfig);
+        console.log(apiConfig.owmKey);
+        const weatherURL = `http://api.openweathermap.org/data/2.5/forecast?zip=11102&units=imperial&APPID=${apiConfig.owmKey}`
     
         fetch(weatherURL)
         .then(res => res.json())
@@ -20,12 +22,20 @@ export default class WeekContainer extends React.Component {
                 dailyData: dailyData
             }, () => console.log(this.state))
         })
-      }
+    }
+
+    formatDatCards = () => {
+        return this.state.dailyData.map((reading, index) => <DayCard reading={reading} key={index} />)
+    }
 
     render() {
         return (
-            <div>
-                <h1>The Week Container</h1>
+            <div className="container">
+                <h1 className="display-1 jumbotron">5-Day Forecast.</h1>
+                <h5 className="display-5 text-muted">New York, US</h5>
+                <div className="row justify-content-center">
+                    {this.formatDayCards()}
+                </div>
             </div>
         )
     }
