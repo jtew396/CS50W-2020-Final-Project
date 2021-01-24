@@ -1,17 +1,19 @@
 import React from 'react';
-import DayCard from 'DayCard.js';
+import DayCard from './DayCard';
+import DegreeToggle from './DegreeToggle';
 import apiConfig from './../../apiKeys';
 
 export default class WeekContainer extends React.Component {
     state = {
         fullData: [],
-        dailyData: []
+        dailyData: [],
+        degreeType: "fahrenheit"
     }
 
     componentDidMount = () => {
         console.log(apiConfig);
         console.log(apiConfig.owmKey);
-        const weatherURL = `http://api.openweathermap.org/data/2.5/forecast?zip=11102&units=imperial&APPID=${apiConfig.owmKey}`
+        const weatherURL = `http://api.openweathermap.org/data/2.5/forecast?zip=11102&units=imperial&APPID=${apiConfig}`
     
         fetch(weatherURL)
         .then(res => res.json())
@@ -24,8 +26,14 @@ export default class WeekContainer extends React.Component {
         })
     }
 
-    formatDatCards = () => {
-        return this.state.dailyData.map((reading, index) => <DayCard reading={reading} key={index} />)
+    updateForecastDegree = event => {
+        this.setState({
+            degreeType: event.target.value
+        }, () => console.log(this.state))
+    }
+
+    formatDayCards = () => {
+        return this.state.dailyData.map((reading, index) => <DayCard reading={reading} degreeType={this.state.degreeType} key={index} />)
     }
 
     render() {
@@ -33,6 +41,7 @@ export default class WeekContainer extends React.Component {
             <div className="container">
                 <h1 className="display-1 jumbotron">5-Day Forecast.</h1>
                 <h5 className="display-5 text-muted">New York, US</h5>
+                <DegreeToggle degreeType={this.state.degreeType} updateForecastDegree={this.updateForecastDegree}/>
                 <div className="row justify-content-center">
                     {this.formatDayCards()}
                 </div>
