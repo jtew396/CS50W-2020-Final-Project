@@ -13,7 +13,7 @@ export default class WeekContainer extends React.Component {
     componentDidMount = () => {
         console.log(apiConfig);
         console.log(apiConfig.owmKey);
-        const weatherURL = `http://api.openweathermap.org/data/2.5/forecast?zip=11102&units=imperial&APPID=${apiConfig}`
+        const weatherURL = `http://api.openweathermap.org/data/2.5/forecast?zip=38104&units=imperial&APPID=${apiConfig.owmKey}`
     
         fetch(weatherURL)
         .then(res => res.json())
@@ -40,7 +40,7 @@ export default class WeekContainer extends React.Component {
         return (
             <div className="container">
                 <h1 className="display-1 jumbotron">5-Day Forecast.</h1>
-                <h5 className="display-5 text-muted">New York, US</h5>
+                <h5 className="display-5 text-muted">Memphis, TN</h5>
                 <DegreeToggle degreeType={this.state.degreeType} updateForecastDegree={this.updateForecastDegree}/>
                 <div className="row justify-content-center">
                     {this.formatDayCards()}
