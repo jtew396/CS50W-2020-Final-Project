@@ -2,3 +2,4 @@ npm
 react-bootstrap
 react-router-dom
 moment
+react-google-maps
