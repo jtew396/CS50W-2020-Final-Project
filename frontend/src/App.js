@@ -38,6 +38,8 @@ const options = {
 }
 
 export default function App() {
+    console.log(apiConfig);
+    console.log(apiConfig.googleKey);
     const {isLoaded, loadError} = useLoadScript({
         googleMapsApiKey: apiConfig.googleKey,
         libraries,
