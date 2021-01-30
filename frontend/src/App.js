@@ -37,19 +37,32 @@ const options = {
     zoomControl: true
 }
 
+function getSavedMarkers() {
+    fetch('http://localhost:8000/skatespots/spots/', {})
+    .then(res => res.json())
+    .then(json => {
+        return json.map(i => {
+            return { lat: i.lat, lng: i.lng }
+        });
+    });
+}
+
+const savedMarkers = getSavedMarkers();
+
+console.log('These are the saved markers.');
+console.log(getSavedMarkers());
+
 export default function App() {
-    console.log(apiConfig);
-    console.log(apiConfig.googleKey);
     const {isLoaded, loadError} = useLoadScript({
         googleMapsApiKey: apiConfig.googleKey,
         libraries,
     });
-    const [markers, setMarkesrs] = React.useState([]);
+    const [markers, setMarkers] = React.useState([]);
     const [selected, setSelected] = React.useState(null);
 
     const onMapClick = React.useCallback((event) => {
-        setMarkesrs(current => [
-            ...current, 
+        setMarkers(current => [
+            ...current,
             {
                 lat: event.latLng.lat(),
                 lng: event.latLng.lng(),
@@ -67,7 +80,7 @@ export default function App() {
         mapRef.current.panTo({lat, lng});
         mapRef.current.setZoom(14);
     }, []);
-    
+
     if (loadError) return "Error loading maps";
     if(!isLoaded) return "Loading Maps";
 
@@ -80,17 +93,17 @@ export default function App() {
             <Search panTo={panTo} />
             <Locate panTo={panTo} />
 
-            <GoogleMap 
-                mapContainerStyle={mapContainerStyle} 
-                zoom={12} 
+            <GoogleMap
+                mapContainerStyle={mapContainerStyle}
+                zoom={12}
                 center={center}
                 options={options}
                 onClick={onMapClick}
                 onLoad={onMapLoad}
             >
                 {markers.map((marker) => (
-                    <Marker 
-                        key={marker.time.toISOString()} 
+                    <Marker
+                        key={marker.time.toISOString()}
                         position={{lat: marker.lat, lng: marker.lng}}
                         onClick={() => {
                             setSelected(marker);
@@ -98,10 +111,9 @@ export default function App() {
                     />
                 ))}
 
-
                 {selected ? (
-                    <InfoWindow 
-                        position={{ lat: selected.lat, lng: selected.lng }} 
+                    <InfoWindow
+                        position={{ lat: selected.lat, lng: selected.lng }}
                         onCloseClick={() => {
                             setSelected(null);
                         }}
@@ -119,8 +131,8 @@ export default function App() {
 
 function Locate({panTo}) {
     return (
-        <button 
-            className="locate" 
+        <button
+            className="locate"
             onClick={() => {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
@@ -128,8 +140,8 @@ function Locate({panTo}) {
                             lat: position.coords.latitude,
                             lng: position.coords.longitude,
                         });
-                    }, 
-                    () => null, 
+                    },
+                    () => null,
                 );
             }}
         >
@@ -140,10 +152,10 @@ function Locate({panTo}) {
 
 function Search({ panTo }) {
     const {
-        ready, 
-        value, 
-        suggestions: { status, data }, 
-        setValue, 
+        ready,
+        value,
+        suggestions: { status, data },
+        setValue,
         clearSuggestions,
     } = usePlacesAutocomplete({
         requestOptions: {
@@ -154,7 +166,7 @@ function Search({ panTo }) {
 
     return (
         <div className="search">
-            <Combobox 
+            <Combobox
                 onSelect={async (address) => {
                     setValue(address, false);
                     clearSuggestions();
@@ -168,8 +180,8 @@ function Search({ panTo }) {
                     }
                 }}
             >
-                <ComboboxInput 
-                    value={value} 
+                <ComboboxInput
+                    value={value}
                     onChange={(e) => {
                         setValue(e.target.value);
                     }}
@@ -178,7 +190,7 @@ function Search({ panTo }) {
                 />
                 <ComboboxPopover>
                     <ComboboxList>
-                        {status === "OK" && 
+                        {status === "OK" &&
                             data.map(({ id, description }) => (
                                 <ComboboxOption key={id} value={description} />
                             ))}

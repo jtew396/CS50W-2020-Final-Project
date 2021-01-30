@@ -19,8 +19,5 @@ from pictures import views
 from rest_framework_jwt.views import obtain_jwt_token
 
 urlpatterns = [
-    path('skatespots/', include('skatespots.urls')),
-    path('pictures/', include('pictures.urls')),
-    path('weather/', include('weather.urls')),
-    path('token-auth/', obtain_jwt_token)
+    path('skatespots/', include('skatespots.urls'))
 ]
