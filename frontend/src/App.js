@@ -36,23 +36,22 @@ const options = {
     disableDefaultUI: true,
     zoomControl: true
 }
+var savedMarkers = [];
 
 function getSavedMarkers() {
     fetch('http://localhost:8000/skatespots/spots/', {})
     .then(res => res.json())
     .then(json => {
-        return json.map(i => {
+        savedMarkers = json.map(i => {
             return { lat: i.lat, lng: i.lng }
         });
     });
 }
 
-const savedMarkers = getSavedMarkers();
 
-console.log('These are the saved markers.');
-console.log(getSavedMarkers());
 
 export default function App() {
+    // const [error, setError] = React.useState(null);
     const {isLoaded, loadError} = useLoadScript({
         googleMapsApiKey: apiConfig.googleKey,
         libraries,
@@ -79,6 +78,21 @@ export default function App() {
     const panTo = React.useCallback(({lat, lng}) => {
         mapRef.current.panTo({lat, lng});
         mapRef.current.setZoom(14);
+    }, []);
+
+    React.useEffect(() => {
+        fetch('http://localhost:8000/skatespots/spots/')
+        .then(res => res.json())
+        .then(
+            (result) => {
+                setMarkers(result.map(i => {
+                    return { lat: i.lat, lng: i.lng, time: new Date(i.created_at) }
+                }));
+            },
+            (error) => {
+
+            }
+        )
     }, []);
 
     if (loadError) return "Error loading maps";
