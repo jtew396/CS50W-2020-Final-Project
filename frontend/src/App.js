@@ -1,15 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import apiConfig from './apiKeys';
 import {
-    withGoogleMap,
-    withScriptjs,
     GoogleMap,
     useLoadScript,
     Marker,
     InfoWindow
 } from "@react-google-maps/api";
 import { formatRelative } from "date-fns";
-
 import usePlacesAutocomplete, {
     getGeocode,
     getLatLng,
@@ -22,6 +19,7 @@ import {
     ComboboxOption,
 } from "@reach/combobox";
 import "@reach/combobox/styles.css";
+
 
 const libraries = ["places"];
 const mapContainerStyle = {
@@ -36,18 +34,6 @@ const options = {
     disableDefaultUI: true,
     zoomControl: true
 }
-var savedMarkers = [];
-
-function getSavedMarkers() {
-    fetch('http://localhost:8000/skatespots/spots/', {})
-    .then(res => res.json())
-    .then(json => {
-        savedMarkers = json.map(i => {
-            return { lat: i.lat, lng: i.lng }
-        });
-    });
-}
-
 
 
 export default function App() {
@@ -60,6 +46,17 @@ export default function App() {
     const [selected, setSelected] = React.useState(null);
 
     const onMapClick = React.useCallback((event) => {
+        fetch('http://localhost:8000/skatespots/spots/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'accept': 'application/json',
+            },
+            body: JSON.stringify({
+                lat: event.latLng.lat(),
+                lng: event.latLng.lng(),
+            })
+        })
         setMarkers(current => [
             ...current,
             {

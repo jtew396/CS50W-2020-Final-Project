@@ -1,8 +1,4 @@
 npm
-react-bootstrap
-react-router-dom
-moment
-react-google-maps
 @react-google-maps/api
 use-places-autocomplete
 @reach/combobox

@@ -15,7 +15,8 @@ code {
 h1 {
   position: absolute;
   top: 1rem;
-  left: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
   color: #281414;
   z-index: 10;
   margin: 0;
@@ -24,10 +25,10 @@ h1 {
 
 .search {
   position: absolute;
-  top: 1rem;
+  top: 5rem;
   left: 50%;
   transform: translateX(-50%);
-  width: 100%;
+  width: 90%;
   max-width: 400px;
   z-index: 10;
 }
@@ -50,4 +51,18 @@ h1 {
 .locate img {
   width: 30px;
   cursor: pointer;
+}
+
+@media only screen and (min-width: 1000px) {
+    h1 {
+        left: 1rem;
+        transform: none;
+    }
+
+    .search {
+        top: 1rem;
+        width: 100%;
+        transform: '';
+    }
+
 }
